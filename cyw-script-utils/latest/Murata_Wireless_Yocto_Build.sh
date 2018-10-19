@@ -1000,7 +1000,7 @@ fi
 # if FMAC selection [4] is Manda, proceed with 11 targets.
 
 if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
-	#echo "DEBUG:: krogoth-mothra"
+	#echo "DEBUG:: krogoth-mothra/krogoth-manda"
 	#exit
 	while true; do
 
@@ -2288,10 +2288,10 @@ if [ "$BRANCH_RELEASE_OPTION" -ne "1" ] && [ "$BRANCH_RELEASE_OPTION" -ne "4" ];
 	echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"
 fi
 
-#BRANCH=morty-mothra
-if [ "$FMAC_VERSION" = "3" ]; then
+#BRANCH=morty-mothra/manda
+if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
 	if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ]; then
-		#echo "DEBUG FOR MORTY-MOTHRA-1:: IMX6 and 7"
+		#echo "DEBUG FOR MORTY-MOTHRA/MANDA-1:: IMX6 and 7"
 		echo -e "VIO Signaling                   : ${GRN}$VIO_SIGNALING_STRING${NC}"	
 	fi
 fi
@@ -2405,7 +2405,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 
 		#TARGET_NAME=imx8mqevk => rocko-mothra
-		if [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
+		if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
 			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
@@ -2414,23 +2414,51 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
 			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-		elif [ "$FMAC_VERSION" = "3" ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
+		elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
 			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
 			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 				cp $LINUX_SRC $LINUX_DEST
 			fi
 		fi
 
+
+		#TARGET_NAME=imx8mqevk => rocko-manda
+		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
+			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+				cp $LINUX_SRC $LINUX_DEST
+			fi
+			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx
+			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
+			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+		elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
+			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
+			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+				cp $LINUX_SRC $LINUX_DEST
+			fi
+		fi
+
+
 		#BRANCH=morty-mothra
-		if [ "$FMAC_VERSION" = "3" ]; then
+		if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
 			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
-				#echo "DEBUG FOR MORTY/KROGOTH-MOTHRA:: IMX6 and 7: COPYING bb appends"
+				#echo "DEBUG FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 				fi
 			fi
 		fi
 		
+		#BRANCH=morty-manda
+		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
+			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
+				#echo "DEBUG FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+			fi
+		fi
 
 
 	cd $BUILD_DIR
