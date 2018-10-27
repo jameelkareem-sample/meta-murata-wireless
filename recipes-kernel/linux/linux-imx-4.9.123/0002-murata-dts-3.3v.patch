@@ -443,7 +443,7 @@ index 3658389..2bd3d79 100644
  
  &usdhc3 {
 diff --git a/arch/arm/boot/dts/imx6ul-14x14-evk.dts b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
-index da2ae89..9c2c819 100644
+index db8427f..cc1af56 100644
 --- a/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 +++ b/arch/arm/boot/dts/imx6ul-14x14-evk.dts
 @@ -204,12 +204,26 @@
@@ -486,7 +486,7 @@ index da2ae89..9c2c819 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx6ul-9x9-evk.dts b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
-index 29896ea..d3a4353 100644
+index caa2ed5..bb772824 100644
 --- a/arch/arm/boot/dts/imx6ul-9x9-evk.dts
 +++ b/arch/arm/boot/dts/imx6ul-9x9-evk.dts
 @@ -196,12 +196,26 @@
@@ -647,7 +647,7 @@ index d4810bd..ff8a432 100644
 +	registers-default = /bits/ 8 <0x47>;	/* BT_REG_ON */
  };
 diff --git a/arch/arm/boot/dts/imx6ull-14x14-evk.dts b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
-index cd2a076..d038c1c 100644
+index 143250b..0a91d04 100644
 --- a/arch/arm/boot/dts/imx6ull-14x14-evk.dts
 +++ b/arch/arm/boot/dts/imx6ull-14x14-evk.dts
 @@ -167,12 +167,26 @@
@@ -690,7 +690,7 @@ index cd2a076..d038c1c 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx6ull-9x9-evk.dts b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
-index 8f7c6f8..55ddde4 100644
+index 9991169..25e9361 100644
 --- a/arch/arm/boot/dts/imx6ull-9x9-evk.dts
 +++ b/arch/arm/boot/dts/imx6ull-9x9-evk.dts
 @@ -196,12 +196,26 @@
@@ -733,7 +733,7 @@ index 8f7c6f8..55ddde4 100644
  			compatible = "ethernet-phy-ieee802.3-c22";
  			reg = <1>;
 diff --git a/arch/arm/boot/dts/imx7d-sdb.dts b/arch/arm/boot/dts/imx7d-sdb.dts
-index f126906..c33c54d 100644
+index 8445a25..49d8fe3 100644
 --- a/arch/arm/boot/dts/imx7d-sdb.dts
 +++ b/arch/arm/boot/dts/imx7d-sdb.dts
 @@ -38,6 +38,8 @@
@@ -745,7 +745,7 @@ index f126906..c33c54d 100644
   */
  
  /dts-v1/;
-@@ -59,6 +61,11 @@
+@@ -63,6 +65,11 @@
  		#reset-cells = <0>;
  	};
  
@@ -757,7 +757,7 @@ index f126906..c33c54d 100644
  	regulators {
  		compatible = "simple-bus";
  		#address-cells = <1>;
-@@ -111,16 +118,6 @@
+@@ -115,16 +122,6 @@
  			off-on-delay = <20000>;
  			enable-active-high;
  		};
@@ -774,7 +774,7 @@ index f126906..c33c54d 100644
  	};
  
  	backlight {
-@@ -131,12 +128,6 @@
+@@ -135,12 +132,6 @@
  		status = "okay";
  	};
  
@@ -787,7 +787,18 @@ index f126906..c33c54d 100644
  	pxp_v4l2_out {
  		compatible = "fsl,imx7d-pxp-v4l2", "fsl,imx6sx-pxp-v4l2", "fsl,imx6sl-pxp-v4l2";
  		status = "okay";
-@@ -771,17 +762,25 @@
+@@ -624,6 +615,10 @@
+ 	};
+ };
+ 
++&pcie_phy{
++       status = "okay";
++};
++
+ &pcie {
+ 	pinctrl-names = "default";
+ 	reset-gpio = <&gpio_spi 1 GPIO_ACTIVE_LOW>;
+@@ -771,17 +766,25 @@
  };
  
  &usdhc2 {
@@ -818,7 +829,7 @@ index f126906..c33c54d 100644
  };
  
  &usdhc3 {
-@@ -1175,6 +1174,8 @@
+@@ -1175,6 +1178,8 @@
  				MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5a
  				MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5a
  				MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5a
@@ -827,7 +838,7 @@ index f126906..c33c54d 100644
  			>;
  		};
  
-@@ -1186,6 +1187,8 @@
+@@ -1186,6 +1191,8 @@
  				MX7D_PAD_SD2_DATA1__SD2_DATA1		0x5b
  				MX7D_PAD_SD2_DATA2__SD2_DATA2		0x5b
  				MX7D_PAD_SD2_DATA3__SD2_DATA3		0x5b
