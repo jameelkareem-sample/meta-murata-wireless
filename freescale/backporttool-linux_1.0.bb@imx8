@@ -16,7 +16,7 @@ SRC_URI[archive99.sha256sum] = "8177f97513213526df2cf6184d8ff986c675afb514d4e68a
 
 inherit linux-kernel-base kernel-arch
 
-DEPENDS = " linux-imx"
+DEPENDS += " linux-imx"
 DEPENDS += " backporttool-native"
 
 #Added to make it to work for core-image-base
