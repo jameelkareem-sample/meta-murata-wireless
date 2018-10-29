@@ -516,13 +516,6 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 		cd $TI_BUILD_DIR
 		. $TI_BUILD_DIR/conf/setenv
 		export PATH=$HOME/gcc-linaro-6.2.1-2016.11-x86_64_arm-linux-gnueabihf/bin:$PATH
-
-#	elif [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam572x" ]; then
-#		#echo "DEBUG:: MORTY"
-#		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-morty -m imx-4.9.11-1.0.0_ga.xml
-#	elif [ "$TiSitaraYoctoRelease" = "$TiSitaramortyYoctoam335x" ]; then
-#		#echo "DEBUG:: KROGOTH"
-#		repo init -u https://source.codeaurora.org/external/imx/fsl-arm-yocto-bsp.git -b imx-4.1-krogoth -m imx-4.1.15-2.0.0.xml
 	fi
 
 	echo " "
@@ -576,8 +569,9 @@ echo     "-------------------------------------------------------------"
 while true; do
 	read -p "Select which entry? " FMAC_VERSION
 echo "FMAC DEBUG:: $FMAC_VERSION"
-	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]  || [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
-		#echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
+	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]  || \
+		[ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
+		echo "DEBUG:: SELECTION OF FMAC :: $FMAC_VERSION"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -705,15 +699,15 @@ done
 		echo "6) Select i.MX Yocto Release"
 		echo "----------------------------"
 		echo " "
-		echo "---------------------------------------------------------------------------------"
-		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\""      |"
-		echo "|     |      Release     | branch  | Supported     |     Developer Tag          |"
-		echo "|-----|------------------|---------|---------------|----------------------------|"
-		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda       |"
-		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda            |"
-		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda            |"
-		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda          |"
-		echo "---------------------------------------------------------------------------------"
+		echo "----------------------------------------------------------------------------"
+		echo "|Entry|     i.MX Yocto   | Yocto   | i.MX          |"\""meta-murata-wireless"\"" |"
+		echo "|     |      Release     | branch  | Supported     |     Developer Tag     |"
+		echo "|-----|------------------|---------|---------------|-----------------------|"
+		echo "|  1  | 4.9.123_2.3.0 GA | rocko   | 6,7,8         | imx-rocko-mini-manda  |"
+		echo "|  2  | 4.9.88_2.0.0 GA  | rocko   | 6,7,8         | imx-rocko-manda       |"
+		echo "|  3  | 4.9.11_1.0.0 GA  | morty   | 6,7           | imx-morty-manda       |"
+		echo "|  4  | 4.1.15_2.0.0 GA  | krogoth | 6,7 (No 7ULP) | imx-krogoth-manda     |"
+		echo "----------------------------------------------------------------------------"
 		break
 
 	else
@@ -725,7 +719,7 @@ done
 while true; do
 	read -p "Select which entry? " ENTRY
 	if [ "$ENTRY" = "1" ] || [ "$ENTRY" = "2" ] || [ "$ENTRY" = "3" ] || [ "$ENTRY" = "4" ]; then
-		#echo "DEBUG:: $ENTRY"
+		echo "DEBUG:: $ENTRY"
 		break
 	else
 		echo -e "${RED}That is not a valid choice, try again.${NC}"
@@ -2355,6 +2349,12 @@ fi
 DISTRO_NAME=fsl-imx-x11
 IMAGE_NAME=core-image-base
 
+# change the defaults for DISTRO for rocko-mini
+#  ERROR - Only Wayland distros are supported for i.MX 8 or i.MX 8M
+if [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then
+	DISTRO_NAME=fsl-imx-wayland
+fi
+
 echo " "
 echo "8) Select DISTRO & Image"
 echo "------------------------"
@@ -2672,7 +2672,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	cd $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/linux
 
 #	Copies necessary bbappend file ( 1.8V or 3.3V VIO signaling ) to the default file, only for "orga" and "battra"
-	if [ "$FMAC_VERSION" = "1" ] || [ "$FMAC_VERSION" = "2" ]; then
+	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]; then
 		case $BRANCH_RELEASE_OPTION in
 			2|3|5|6)
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -2686,61 +2686,97 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 	fi
 
 		#TARGET_NAME=imx8mqevk => rocko-mothra
-		if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
-			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-				cp $LINUX_SRC $LINUX_DEST
-			fi
-			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx
-			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
-			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
-			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-		elif [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
-			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-				cp $LINUX_SRC $LINUX_DEST
-			fi
-		fi
-
-
-		#TARGET_NAME=imx8mqevk => rocko-manda
-		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" = "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
-			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-				cp $LINUX_SRC $LINUX_DEST
-			fi
-			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx
-			mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
-			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
-			cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 $BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
-		elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
-			#echo "DEBUG FOR IMX6,7-rocko: COPYING bb appends files"
-			if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-				cp $LINUX_SRC $LINUX_DEST
-			fi
-		fi
-
-
-		#BRANCH=morty-mothra
+		# MOTHRA is supported for ROCKO, MORTY and KROGOTH.
 		if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ]; then
-			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
-				#echo "DEBUG FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
+			echo "DEBUG:: MOTHRA-LOADING"
+		    	if [ "$TARGET_NAME" = "imx8mqevk" ]; then
+				echo "DEBUG:: FOR IMX8-rocko-mothra: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 				fi
-			fi
-		fi
-		
-		#BRANCH=morty-manda
-		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ]; then
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb \
+			   		$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb \
+			   		$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
+				mv $BSP_DIR/sources/meta-murata-wireless/recipes-kernel/firmware-imx/firmware-imx_7.5.bbappend \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/firmware-imx/firmware-imx_7.5.bbappendx
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+			      		$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+			      		$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+		    	elif [ "$TARGET_NAME" != "imx8mqevk" ]; then
+				echo "DEBUG:: FOR IMX6,7-rocko: COPYING bb appends files"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+		    	fi
+
+			#BRANCH=morty-mothra
 			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
-				#echo "DEBUG FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
+				echo "DEBUG:: FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
 					cp $LINUX_SRC $LINUX_DEST
 				fi
 			fi
 		fi
 
+
+		# MANDA is supported for ROCKO-MINI, ROCKO, MORTY and KROGOTH.
+		#TARGET_NAME=imx8mqevk => rocko-manda
+		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockoYocto" ]; then
+			echo "DEBUG:: MANDA-LOADING-FOR-ROCKO"
+			if [ "$TARGET_NAME" = "imx8mqevk" ]; then
+				echo "DEBUG:: FOR IMX8-rocko: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld_2.0.bbx
+				mv $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qcacld-lea_1.0.bbx
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+			elif [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$TARGET_NAME" != "imx8mqevk" ]; then
+				echo "DEBUG:: FOR IMX6,7-rocko: COPYING bb appends files"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+			fi
+
+			#BRANCH=morty-manda
+			if [ $BRANCH_RELEASE_OPTION = "3" ] || [ $BRANCH_RELEASE_OPTION = "4" ] || [ $BRANCH_RELEASE_OPTION = "5" ] || [ $BRANCH_RELEASE_OPTION = "6" ]; then
+				echo "DEBUG:: FOR MORTY/KROGOTH-MANDA:: IMX6 and 7: COPYING bb appends"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+			fi
+		fi
+
+		#TARGET_NAME=imx8mqevk => rocko-mini-manda
+		if [ "$FMAC_VERSION" = $MANDA_FMAC_INDEX ] && [ "$iMXYoctoRelease" = "$imxrockominiYocto" ]; then 
+			echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
+			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
+				echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
+				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bb \
+					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca9377_2.0.bbx
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/backporttool-linux_1.0.bb@imx8 \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-kernel/backporttool-linux/backporttool-linux_1.0.bb
+				cp -f $BSP_DIR/sources/meta-murata-wireless/freescale/murata-binaries_1.0.bb@imx8 \
+					$BSP_DIR/sources/meta-murata-wireless/recipes-connectivity/murata-binaries/murata-binaries_1.0.bb
+			else 
+				echo "DEBUG FOR IMX6,7-rocko-mini: COPYING bb appends files"
+				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					cp $LINUX_SRC $LINUX_DEST
+				fi
+			fi
+		fi
 
 	cd $BUILD_DIR
 
