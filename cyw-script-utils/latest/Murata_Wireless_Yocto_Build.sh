@@ -2673,6 +2673,7 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 
 #	Copies necessary bbappend file ( 1.8V or 3.3V VIO signaling ) to the default file, only for "orga" and "battra"
 	if [ "$FMAC_VERSION" = $ORGA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $BATTRA_FMAC_INDEX ]; then
+		echo "DEBUG:: ORGA/BATTRA"
 		case $BRANCH_RELEASE_OPTION in
 			2|3|5|6)
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
@@ -2757,7 +2758,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 			echo "DEBUG:: MANDA-LOADING-FOR-ROCKO-MINI"
 			if [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8qmmek" ] || [ "$TARGET_NAME" = "imx8mqevk" ] || [ "$TARGET_NAME" = "imx8mmevk" ]; then
 				echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
+				echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
+					echo "DEBUG:: Copying SRC::$LINUX_SRC DEST::$LINUX_SRC"
 					cp $LINUX_SRC $LINUX_DEST
 				fi
 				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
