@@ -1112,6 +1112,7 @@ if [ "$FMAC_VERSION" = $MOTHRA_FMAC_INDEX ] || [ "$FMAC_VERSION" = $MANDA_FMAC_I
 				echo "DEBUG:: Copying 123 bbappend file for 8MQ"
 				LINUX_SRC=linux-imx_4.9.123.bbappend.8MQ
 				LINUX_DEST=linux-imx_4.9.123.bbappend
+				echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 				TARGET_NAME=imx8mqevk
 				break
 				;;
@@ -2760,8 +2761,9 @@ if [ "$REPLY" = "y" ] || [ "$REPLY" = "Y" ] || [ "$REPLY" = "" ]; then
 				echo "DEBUG FOR IMX8-rocko-mini: COPYING IMX8 BACKPORTS, Murata-Binaries and bbx files"
 				echo "DEBUG:: SRC::$LINUX_SRC DEST::$LINUX_SRC"
 				if [ "$LINUX_SRC" != "$LINUX_DEST" ]; then
-					echo "DEBUG:: Copying SRC::$LINUX_SRC DEST::$LINUX_SRC"
+					echo "DEBUG:: Before copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 					cp $LINUX_SRC $LINUX_DEST
+					echo "DEBUG:: After copying SRC::$LINUX_SRC DEST::$LINUX_DEST"
 				fi
 				cp $BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bb \
 					$BSP_DIR/sources/meta-fsl-bsp-release/imx/meta-bsp/recipes-kernel/kernel-modules/kernel-module-qca6174_2.0.bbx
